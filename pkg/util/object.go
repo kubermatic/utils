@@ -1,5 +1,5 @@
 /*
-Copyright 2019 The KubeCarrier Authors.
+Copyright 2019 The Kubermatic Authors.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -55,7 +55,7 @@ func ToObjectReference(object runtime.Object, scheme *runtime.Scheme) ObjectRefe
 		// thus get/create/update/patch/delete shall error out long before this is called
 		// This massively simplifies the function interface and allows OwnedBy to be a
 		// one-liner instead of 3 line check which never errors
-		// this is error is completely under our control, users of kubecarrier cannot
+		// this is error is completely under our control, users of kubermatic cannot
 		// change cluster state to cause it.
 		panic(fmt.Sprintf("cannot deduce GVK for object (type %T)", object))
 	}

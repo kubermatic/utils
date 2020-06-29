@@ -1,5 +1,5 @@
 /*
-Copyright 2019 The KubeCarrier Authors.
+Copyright 2019 The Kubermatic Authors.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -24,8 +24,8 @@ import (
 )
 
 const (
-	finalizerA = "kubecarrier.io/finalizer-a"
-	finalizerB = "kubecarrier.io/finalizer-b"
+	finalizerA = "kubermatic.io/finalizer-a"
+	finalizerB = "kubermatic.io/finalizer-b"
 )
 
 func TestFinalizer(t *testing.T) {

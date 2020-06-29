@@ -1,5 +1,5 @@
 /*
-Copyright 2019 The KubeCarrier Authors.
+Copyright 2019 The Kubermatic Authors.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -31,11 +31,11 @@ import (
 
 const (
 	// OwnerNameLabel references the name of the owner of this object.
-	OwnerNameLabel = "owner.kubecarrier.io/name"
+	OwnerNameLabel = "owner.kubermatic.io/name"
 	// OwnerNamespaceLabel references the namespace of the owner of this object.
-	OwnerNamespaceLabel = "owner.kubecarrier.io/namespace"
+	OwnerNamespaceLabel = "owner.kubermatic.io/namespace"
 	// OwnerTypeLabel references the type of the owner of this object.
-	OwnerTypeLabel = "owner.kubecarrier.io/type"
+	OwnerTypeLabel = "owner.kubermatic.io/type"
 )
 
 type generalizedListOption interface {
@@ -97,7 +97,7 @@ func requestHandlerForOwner(ownerType runtime.Object, scheme *runtime.Scheme) ha
 		// thus get/create/update/patch/delete shall error out long before this is called
 		// This massively simplifies the function interface and allows OwnedBy to be a
 		// one-liner instead of 3 line check which never errors
-		// this is error is completely under our control, users of kubecarrier cannot
+		// this is error is completely under our control, users of kubermatic cannot
 		// change cluster state to cause it.
 		panic(fmt.Sprintf("cannot deduce GVK for owner (type %T)", ownerType))
 	}
@@ -168,7 +168,7 @@ func labelsForOwner(obj runtime.Object, scheme *runtime.Scheme) map[string]strin
 		// thus get/create/update/patch/delete shall error out long before this is called
 		// This massively simplifies the function interface and allows OwnedBy to be a
 		// one-liner instead of 3 line check which never errors
-		// this is error is completely under our control, users of kubecarrier cannot
+		// this is error is completely under our control, users of kubermatic cannot
 		// change cluster state to cause it.
 		panic(fmt.Sprintf("cannot deduce GVK for owner (type %T)", obj))
 	}

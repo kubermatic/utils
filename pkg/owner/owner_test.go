@@ -1,5 +1,5 @@
 /*
-Copyright 2019 The KubeCarrier Authors.
+Copyright 2019 The Kubermatic Authors.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -44,7 +44,7 @@ func TestSetOwnerReference(t *testing.T) {
 	owner.SetName("hans")
 	owner.SetNamespace("hans-playground")
 	owner.SetGroupVersionKind(schema.GroupVersionKind{
-		Group:   "test.kubecarrier.io",
+		Group:   "test.kubermatic.io",
 		Kind:    "Test",
 		Version: "v1alpha1",
 	})
@@ -56,7 +56,7 @@ func TestSetOwnerReference(t *testing.T) {
 	assert.Equal(t, map[string]string{
 		OwnerNameLabel:      "hans",
 		OwnerNamespaceLabel: "hans-playground",
-		OwnerTypeLabel:      "Test.test.kubecarrier.io",
+		OwnerTypeLabel:      "Test.test.kubermatic.io",
 	}, obj.GetLabels())
 	// this is the kubernetes regex that validates label values
 	assert.Regexp(
@@ -67,7 +67,7 @@ func TestSetOwnerReference(t *testing.T) {
 func Test_requestHandlerForOwner(t *testing.T) {
 	owner := &unstructured.Unstructured{}
 	owner.SetGroupVersionKind(schema.GroupVersionKind{
-		Group:   "test.kubecarrier.io",
+		Group:   "test.kubermatic.io",
 		Kind:    "Test",
 		Version: "v1alpha1",
 	})
@@ -78,7 +78,7 @@ func Test_requestHandlerForOwner(t *testing.T) {
 	matchingObj.SetLabels(map[string]string{
 		OwnerNameLabel:      "test12",
 		OwnerNamespaceLabel: "hans3000",
-		OwnerTypeLabel:      "Test.test.kubecarrier.io",
+		OwnerTypeLabel:      "Test.test.kubermatic.io",
 	})
 
 	nonMatchingTypeObj := &unstructured.Unstructured{}

@@ -14,4 +14,18 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package test
+package testutil
+
+import (
+	"testing"
+
+	"github.com/go-logr/logr"
+	"sigs.k8s.io/controller-runtime/pkg/log/zap"
+)
+
+// NewLogger returns a new Logger flushing to testing.T.
+func NewLogger(t *testing.T) logr.Logger {
+	return zap.New(func(options *zap.Options) {
+		options.DestWritter = &TestingLogWriter{T: t}
+	})
+}

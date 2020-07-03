@@ -14,4 +14,19 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package test
+package util
+
+import (
+	corev1 "k8s.io/api/core/v1"
+	apiextensionsv1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
+	"k8s.io/apimachinery/pkg/runtime"
+	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
+)
+
+var testScheme = runtime.NewScheme()
+
+func init() {
+	// setup scheme for all tests
+	utilruntime.Must(corev1.AddToScheme(testScheme))
+	utilruntime.Must(apiextensionsv1.AddToScheme(testScheme))
+}

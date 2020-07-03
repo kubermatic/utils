@@ -14,4 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package test
+// Package multiowner implements helpers to work with objects that have multiple owners.
+// Similar to our owner package it works across cluster and namespace boundaries.
+package multiowner

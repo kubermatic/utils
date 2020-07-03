@@ -14,4 +14,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package test
+package testutil
+
+const (
+	// OverrideGoldenEnv is the environment variable signalling the golden files should be overwritten
+	OverrideGoldenEnv = "FIX_GOLDEN"
+)

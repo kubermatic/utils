@@ -111,8 +111,8 @@ func DeleteAndWaitUntilNotFound(ctx context.Context, c *RecordingClient, obj run
 	return WaitUntilNotFound(ctx, c, obj, options...)
 }
 
-// UpdateObject uses Poll based approach to update object to avoid update failures due to resource version conflicts.
-func UpdateObject(ctx context.Context, c *RecordingClient, obj runtime.Object, updateFunc func() error) error {
+// TryUpdateUntil uses Poll based approach to update object to avoid update failures due to resource version conflicts.
+func TryUpdateUntil(ctx context.Context, c *RecordingClient, obj runtime.Object, updateFunc func() error) error {
 	updateCtx, cancel := context.WithTimeout(ctx, 30*time.Second)
 	defer cancel()
 	return wait.PollUntil(time.Second, func() (done bool, err error) {

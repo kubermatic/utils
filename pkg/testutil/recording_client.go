@@ -26,6 +26,7 @@ import (
 	"github.com/stretchr/testify/require"
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/runtime"
+	"k8s.io/client-go/rest"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
 	"github.com/kubermatic/utils/pkg/util"
@@ -49,7 +50,10 @@ type RecordingClient struct {
 	mux             sync.Mutex
 }
 
-func NewRecordingClient(cw *util.ClientWatcher, scheme *runtime.Scheme, t *testing.T, strategy CleanUpStrategy) *RecordingClient {
+func NewRecordingClient(t *testing.T, conf *rest.Config, scheme *runtime.Scheme, strategy CleanUpStrategy) *RecordingClient {
+	log := NewLogger(t)
+	cw, err := util.NewClientWatcher(conf, scheme, log)
+	require.NoError(t, err)
 	return &RecordingClient{
 		ClientWatcher:   cw,
 		scheme:          scheme,

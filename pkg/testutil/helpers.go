@@ -24,9 +24,12 @@ import (
 	"io"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/require"
+	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/runtime"
+	"k8s.io/apimachinery/pkg/util/wait"
 	"k8s.io/client-go/util/jsonpath"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
@@ -106,6 +109,27 @@ func DeleteAndWaitUntilNotFound(ctx context.Context, c *RecordingClient, obj run
 		return err
 	}
 	return WaitUntilNotFound(ctx, c, obj, options...)
+}
+
+// TryUpdateUntil uses Poll based approach to update object to avoid update failures due to resource version conflicts.
+func TryUpdateUntil(ctx context.Context, c *RecordingClient, obj runtime.Object, updateFunc func() error) error {
+	updateCtx, cancel := context.WithTimeout(ctx, 30*time.Second)
+	defer cancel()
+	return wait.PollUntil(time.Second, func() (done bool, err error) {
+		if err := WaitUntilFound(updateCtx, c, obj); err != nil {
+			return false, err
+		}
+		if err := updateFunc(); err != nil {
+			return false, err
+		}
+		if err := c.Update(updateCtx, obj); err != nil {
+			if errors.IsConflict(err) {
+				return false, nil
+			}
+			return false, err
+		}
+		return true, nil
+	}, updateCtx.Done())
 }
 
 type TestingLogWriter struct {

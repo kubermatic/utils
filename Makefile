@@ -46,3 +46,7 @@ tidy:
 
 install-git-hooks:
 	pre-commit install
+
+release:
+	goreleaser release --rm-dist
+.PHONY: release

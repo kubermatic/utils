@@ -277,6 +277,9 @@ func (o *ScaffoldOptions) Validate() error {
 // Scaffold prints the Kubernetes object scaffolding to the given output.
 func (o *ScaffoldOptions) Scaffold() error {
 	f, err := os.Create(o.OutputPath)
+	if err != nil {
+		return nil
+	}
 	defer f.Close()
 	boilerplate, err := o.loadBoilerplate()
 	if err != nil {

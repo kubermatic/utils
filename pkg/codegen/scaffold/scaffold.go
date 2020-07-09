@@ -42,7 +42,7 @@ type {{.Resource.Kind}}Spec struct {
 
 {{- if .Spec.Metadata }}
 	// Metadata	contains additional human readable {{.Resource.Kind}} details.
-	Metadata *{{.Resource.Kind}}Metadata ` +"`" + `json:"metadata,omitempty"` + "`" + `
+	Metadata *{{.Resource.Kind}}Metadata ` + "`" + `json:"metadata,omitempty"` + "`" + `
 {{ end }}
 }
 
@@ -51,10 +51,10 @@ type {{.Resource.Kind}}Spec struct {
 type {{.Resource.Kind}}Metadata struct {
 	// DisplayName is the human-readable name of this {{.Resource.Kind}}.
 	// +kubebuilder:validation:MinLength=1
-	DisplayName string ` +"`" + `json:"displayName"` + "`" + `
+	DisplayName string ` + "`" + `json:"displayName"` + "`" + `
 	// Description is the long and detailed description of the {{.Resource.Kind}}.
 	// +kubebuilder:validation:MinLength=1
-	Description string ` +"`" + `json:"description"` + "`" + `
+	Description string ` + "`" + `json:"description"` + "`" + `
 }
 {{ end }}
 
@@ -65,15 +65,15 @@ type {{.Resource.Kind}}Status struct {
 	// INSERT ADDITIONAL STATUS FIELDS -- observed state of cluster
 
 	// ObservedGeneration is the most recent generation observed for this {{.Resource.Kind}} by the controller.
-	ObservedGeneration int64 ` +"`" + `json:"observedGeneration,omitempty"` + "`" + `
+	ObservedGeneration int64 ` + "`" + `json:"observedGeneration,omitempty"` + "`" + `
 	// Conditions represents the latest available observations of a {{.Resource.Kind}}'s current state.
-	Conditions []{{.Resource.Kind}}Condition ` +"`" + `json:"conditions,omitempty"` + "`" + `
+	Conditions []{{.Resource.Kind}}Condition ` + "`" + `json:"conditions,omitempty"` + "`" + `
 	// DEPRECATED.
 	// Phase represents the current lifecycle state of this object.
 	// Consider this field DEPRECATED, it will be removed as soon as there
 	// is a mechanism to map conditions to strings when printing the property.
 	// This is only for display purpose, for everything else use conditions.
-	Phase {{.Resource.Kind}}PhaseType ` +"`" + `json:"phase,omitempty"` + "`" + `
+	Phase {{.Resource.Kind}}PhaseType ` + "`" + `json:"phase,omitempty"` + "`" + `
 }
 
 // {{.Resource.Kind}}PhaseType represents all conditions as a single string for printing by using kubectl commands.
@@ -247,11 +247,11 @@ type {{.Resource.Kind}}List struct {
 // for and conform to runtime.Object and metav1.Object.
 type ScaffoldOptions struct {
 	Resource Resource
-	Spec Spec
-	Status Status
+	Spec     Spec
+	Status   Status
 	// The Path of the Boilerplate header file.
 	Boilerplate string
-	OutputPath string
+	OutputPath  string
 }
 
 // Validate validates the options, returning an error if anything is invalid.
@@ -260,16 +260,16 @@ func (o *ScaffoldOptions) Validate() error {
 		return err
 	}
 	if o.OutputPath == "" {
-		o.OutputPath =	strings.ToLower(o.Resource.Kind) + "_types.go"
+		o.OutputPath = strings.ToLower(o.Resource.Kind) + "_types.go"
 	}
 
 	// Check if the file to write already exists
 	if _, err := os.Stat(o.OutputPath); err == nil {
 		// file is already exist
 		return fmt.Errorf("%s already exists", o.OutputPath)
-	}else if os.IsNotExist(err) {
+	} else if os.IsNotExist(err) {
 		return nil
-	}else {
+	} else {
 		return err
 	}
 }
@@ -288,7 +288,7 @@ func (o *ScaffoldOptions) Scaffold() error {
 	return typesTemplate.Execute(f, o)
 }
 
-func (o *ScaffoldOptions) loadBoilerplate() ([]byte, error){
+func (o *ScaffoldOptions) loadBoilerplate() ([]byte, error) {
 	b, err := ioutil.ReadFile(o.Boilerplate)
 	if err != nil {
 		return nil, err

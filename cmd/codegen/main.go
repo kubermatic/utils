@@ -28,10 +28,10 @@ import (
 func main() {
 	opts := &scaffold.ScaffoldOptions{
 		Resource: scaffold.Resource{
-			Version:"v1alpha1",
+			Version: "v1alpha1",
 		},
 		Spec: scaffold.Spec{
-			Metadata:true,
+			Metadata: true,
 		},
 		Boilerplate: "./hack/boilerplate/boilerplate.go.txt",
 	}

@@ -21,4 +21,3 @@ type Spec struct {
 	// Metadata is true if you want to generate metadata fields in Spec.
 	Metadata bool
 }
-

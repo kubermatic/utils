@@ -19,4 +19,3 @@ package scaffold
 // Status contains the information required to scaffold files for a CRD Status.
 type Status struct {
 }
-

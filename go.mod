@@ -5,7 +5,6 @@ go 1.14
 require (
 	github.com/go-logr/logr v0.1.0
 	github.com/go-logr/zapr v0.1.0
-	github.com/gobuffalo/flect v0.2.1
 	github.com/google/go-cmp v0.5.0
 	github.com/spf13/cobra v1.0.0
 	github.com/stretchr/testify v1.4.0

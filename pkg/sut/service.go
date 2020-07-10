@@ -51,6 +51,7 @@ type SUTFlags struct {
 	Workdir       string
 	TaskName      string
 	ProjectRoot   string
+	Program       string
 	ConfigFlags   *genericclioptions.ConfigFlags
 }
 
@@ -59,14 +60,15 @@ func NewSUTFlags() *SUTFlags {
 		ConfigFlags: genericclioptions.NewConfigFlags(false),
 		TaskName:    "SUT",
 		ProjectRoot: ".",
+		Program:     "cmd/",
 	}
 }
 
-func (f *SUTFlags) NewCommand(log logr.Logger, component string) *cobra.Command {
+func (f *SUTFlags) NewCommand(log logr.Logger, use string) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   component,
+		Use:   use,
 		Long:  strings.TrimSpace(``),
-		Short: "",
+		Short: "system under test",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// k8s client setup
 			clientConfig := f.ConfigFlags.ToRawKubeConfigLoader()
@@ -144,7 +146,7 @@ func (f *SUTFlags) NewCommand(log logr.Logger, component string) *cobra.Command 
 			goModPath := path.Join(root, "go.mod")
 			data, err := ioutil.ReadFile(goModPath)
 			if err != nil {
-				return err
+				return fmt.Errorf("cannot read go.mod file, is project root a go module?: %w", err)
 			}
 			gomod, err := modfile.Parse(goModPath, data, nil)
 			if err != nil {
@@ -153,7 +155,7 @@ func (f *SUTFlags) NewCommand(log logr.Logger, component string) *cobra.Command 
 			// generate tasks
 			task := ide.Task{
 				Name:    f.TaskName,
-				Program: "cmd/" + component,
+				Program: f.Program,
 				Args:    taskArgs,
 				Env:     taskEnv,
 				LDFlags: f.LDFlags,
@@ -177,6 +179,7 @@ func (f *SUTFlags) NewCommand(log logr.Logger, component string) *cobra.Command 
 	cmd.Flags().StringVar(&f.DeploymentNN, "deployment-nn", f.DeploymentNN, "deployment-nn signal the deployement namespace name which should be selected. If none (default) a fzf based picker shall be shown")
 	cmd.Flags().StringVar(&f.Workdir, "workdir", f.Workdir, "sut working for logs, rootfs mountpoints, etc. default to new temp dir")
 	cmd.Flags().StringArrayVar(&f.ExtraArgs, "extra-flags", f.ExtraArgs, "extra flags to pass to the running task")
+	cmd.Flags().StringVar(&f.Program, "program", f.Program, "program is the path within project root which is the main package")
 	cmd.Flags().StringVarP(&f.LabelSelector, "selector", "l", f.LabelSelector, "Selector (label query) to filter on, supports '=', '==', and '!='.(e.g. -l key1=value1,key2=value2)")
 	return cmd
 

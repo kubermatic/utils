@@ -22,10 +22,24 @@ builds:
       - CGO_ENABLED=0
       - GO111MODULE=on
     main: cmd/testjsonformat/main.go
+  - id: build-sut
+    binary: sut
+    goos:
+      - linux
+      - windows
+      - darwin
+    goarch:
+      - amd64
+      - "386"
+    env:
+      - CGO_ENABLED=0
+      - GO111MODULE=on
+    main: cmd/sut/main.go
 archives:
   - id: utils
     builds:
       - build-testjsonformat
+      - build-sut
     name_template: "{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}"
     format: tar.gz
     format_overrides:

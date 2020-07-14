@@ -23,7 +23,6 @@ import (
 	"os"
 
 	statikfs "github.com/thetechnick/statik/fs"
-	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime"
 	"sigs.k8s.io/kustomize/v3/k8sdeps/kunstruct"
 	"sigs.k8s.io/kustomize/v3/k8sdeps/transformer"
@@ -73,19 +72,20 @@ type KustomizeContext interface {
 	ReadFile(path string) ([]byte, error)
 	WriteFile(path string, content []byte) error
 	MkLayer(name string, kustomization types.Kustomization) error
-	Build(path string) ([]unstructured.Unstructured, error)
+	Build(path string) ([]runtime.Object, error)
 }
 
 // For returns a new KustomizeContext using the given FileSystem.
-func (k *Kustomize) For(fs fs.FileSystem) KustomizeContext {
+func (k *Kustomize) For(fs fs.FileSystem, scheme *runtime.Scheme) KustomizeContext {
 	return &kustomizeContext{
 		Kustomize: k,
 		fs:        fs,
+		scheme:    scheme,
 	}
 }
 
 // ForHTTP returns a new KustomizeContext using the given http.FileSystem.
-func (k *Kustomize) ForHTTP(httpFS http.FileSystem) KustomizeContext {
+func (k *Kustomize) ForHTTP(httpFS http.FileSystem, scheme *runtime.Scheme) KustomizeContext {
 	kustomizeFs := fs.MakeFsInMemory()
 	if err := statikfs.Walk(httpFS, "/", func(path string, info os.FileInfo, err error) error {
 		if err != nil {
@@ -125,13 +125,15 @@ func (k *Kustomize) ForHTTP(httpFS http.FileSystem) KustomizeContext {
 	return &kustomizeContext{
 		Kustomize: k,
 		fs:        kustomizeFs,
+		scheme:    scheme,
 	}
 }
 
 // kustomizeContext combines a Kustomize instance with a FileSystem to operate on.
 type kustomizeContext struct {
 	*Kustomize
-	fs fs.FileSystem
+	fs     fs.FileSystem
+	scheme *runtime.Scheme
 }
 
 var _ KustomizeContext = (*kustomizeContext)(nil)
@@ -164,7 +166,7 @@ func (k *kustomizeContext) WriteFile(path string, content []byte) error {
 }
 
 // Build is equivalent to running `kustomize build path` for the given filesystem.
-func (k *kustomizeContext) Build(path string, scheme *runtime.Scheme) ([]runtime.Object, error) {
+func (k *kustomizeContext) Build(path string) ([]runtime.Object, error) {
 	ldr, err := loader.NewLoader(loader.RestrictionRootOnly, k.validator, path, k.fs)
 	if err != nil {
 		return nil, fmt.Errorf("creating loader: %w", err)
@@ -187,11 +189,11 @@ func (k *kustomizeContext) Build(path string, scheme *runtime.Scheme) ([]runtime
 			return nil, fmt.Errorf("cannot convert kustomize item instance to Unstructured")
 		}
 
-		object, err := scheme.New(adapter.Unstructured.GroupVersionKind())
+		object, err := k.scheme.New(adapter.Unstructured.GroupVersionKind())
 		if err != nil {
 			return nil, err
 		}
-		if err := scheme.Convert(&adapter.Unstructured, object, nil); err != nil {
+		if err := k.scheme.Convert(&adapter.Unstructured, object, nil); err != nil {
 			return nil, err
 		}
 		objects = append(objects, object)

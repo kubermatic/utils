@@ -2,6 +2,8 @@ module github.com/kubermatic/utils
 
 go 1.14
 
+replace k8s.io/client-go => k8s.io/client-go v0.18.5
+
 require (
 	github.com/Masterminds/goutils v1.1.0 // indirect
 	github.com/Masterminds/semver v1.5.0 // indirect

@@ -2,6 +2,8 @@ module github.com/kubermatic/utils
 
 go 1.14
 
+replace k8s.io/client-go => k8s.io/client-go v0.18.5
+
 require (
 	github.com/Masterminds/goutils v1.1.0 // indirect
 	github.com/Masterminds/semver v1.5.0 // indirect
@@ -13,6 +15,7 @@ require (
 	github.com/mitchellh/copystructure v1.0.0 // indirect
 	github.com/spf13/cobra v1.0.0
 	github.com/stretchr/testify v1.4.0
+	github.com/thetechnick/statik v0.1.8
 	go.uber.org/zap v1.10.0
 	golang.org/x/crypto v0.0.0-20200220183623-bac4c82f6975
 	golang.org/x/mod v0.3.0
@@ -20,6 +23,8 @@ require (
 	k8s.io/apiextensions-apiserver v0.18.5
 	k8s.io/apimachinery v0.18.5
 	k8s.io/cli-runtime v0.18.5
-	k8s.io/client-go v0.18.5
+	k8s.io/client-go v11.0.0+incompatible
 	sigs.k8s.io/controller-runtime v0.6.0
+	sigs.k8s.io/kustomize/v3 v3.3.1
+	sigs.k8s.io/yaml v1.2.0
 )

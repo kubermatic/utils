@@ -36,11 +36,18 @@ func CmdLogMixin(cmd *cobra.Command) *cobra.Command {
 	v := cmd.PersistentFlags().Int8P("verbose", "v", 0, "verbosity level")
 
 	setupLogger := func() {
-		ZapLogger = corezap.NewRaw(func(options *corezap.Options) {
-			level := zap.NewAtomicLevelAt(zapcore.Level(-*v))
-			options.Level = &level
-			options.Development = *dev
-		})
+		if *dev {
+			ZapLogger = corezap.NewRaw(func(options *corezap.Options) {
+				level := zap.NewAtomicLevelAt(zapcore.Level(-*v))
+				options.Level = &level
+				options.Development = *dev
+			})
+		} else {
+			// we need to create ZapLogger manually because we don't want to use Sampler, that does not support arbitrary log levels
+			encoder := zapcore.NewJSONEncoder(zap.NewProductionEncoderConfig())
+			sink := zapcore.AddSync(os.Stderr)
+			ZapLogger = zap.New(zapcore.NewCore(&corezap.KubeAwareEncoder{Encoder: encoder, Verbose: *dev}, sink, zap.NewAtomicLevelAt(zapcore.Level(-*v))), zap.AddCallerSkip(1), zap.ErrorOutput(sink))
+		}
 		ctrl.SetLogger(zapr.NewLogger(ZapLogger))
 	}
 

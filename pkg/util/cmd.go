@@ -38,11 +38,12 @@ func BuildLogger(level int8, dev bool, w io.Writer) logr.Logger {
 			level := zap.NewAtomicLevelAt(zapcore.Level(-level))
 			options.Level = &level
 			options.Development = dev
+			options.DestWritter = w
 		})
 	} else {
 		// we need to create ZapLogger manually because we don't want to use Sampler, that does not support arbitrary log levels
 		encoder := zapcore.NewJSONEncoder(zap.NewProductionEncoderConfig())
-		sink := zapcore.AddSync(os.Stderr)
+		sink := zapcore.AddSync(w)
 		ZapLogger = zap.New(
 			zapcore.NewCore(
 				&corezap.KubeAwareEncoder{Encoder: encoder, Verbose: dev},

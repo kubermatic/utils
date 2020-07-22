@@ -32,6 +32,8 @@ import (
 
 var ZapLogger *zap.Logger
 
+// BuildLogger build logr logger using log level, dev flag and writer
+// WARN: we are setting global variable `ZapLogger` here
 func BuildLogger(level int8, dev bool, w io.Writer) logr.Logger {
 	if dev {
 		ZapLogger = corezap.NewRaw(func(options *corezap.Options) {

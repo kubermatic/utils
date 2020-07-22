@@ -17,8 +17,10 @@ limitations under the License.
 package util
 
 import (
+	"io"
 	"os"
 
+	"github.com/go-logr/logr"
 	"github.com/go-logr/zapr"
 	"github.com/spf13/cobra"
 	"go.uber.org/zap"
@@ -30,35 +32,37 @@ import (
 
 var ZapLogger *zap.Logger
 
+func BuildLogger(level int8, dev bool, w io.Writer) logr.Logger {
+	if dev {
+		ZapLogger = corezap.NewRaw(func(options *corezap.Options) {
+			level := zap.NewAtomicLevelAt(zapcore.Level(-level))
+			options.Level = &level
+			options.Development = dev
+		})
+	} else {
+		// we need to create ZapLogger manually because we don't want to use Sampler, that does not support arbitrary log levels
+		encoder := zapcore.NewJSONEncoder(zap.NewProductionEncoderConfig())
+		sink := zapcore.AddSync(os.Stderr)
+		ZapLogger = zap.New(
+			zapcore.NewCore(
+				&corezap.KubeAwareEncoder{Encoder: encoder, Verbose: dev},
+				sink,
+				zap.NewAtomicLevelAt(zapcore.Level(-level))),
+			zap.AddCallerSkip(1),
+			zap.ErrorOutput(sink),
+			zap.AddStacktrace(zap.NewAtomicLevelAt(zap.ErrorLevel)),
+		)
+
+	}
+	return zapr.NewLogger(ZapLogger)
+}
+
 // CmdLogMixin adds necessary CLI flags for logging and setups the controller runtime log
 func CmdLogMixin(cmd *cobra.Command) *cobra.Command {
 	dev := cmd.PersistentFlags().Bool("development", terminal.IsTerminal(int(os.Stdout.Fd())), "format output for console")
 	v := cmd.PersistentFlags().Int8P("verbose", "v", 0, "verbosity level")
 
-	setupLogger := func() {
-		if *dev {
-			ZapLogger = corezap.NewRaw(func(options *corezap.Options) {
-				level := zap.NewAtomicLevelAt(zapcore.Level(-*v))
-				options.Level = &level
-				options.Development = *dev
-			})
-		} else {
-			// we need to create ZapLogger manually because we don't want to use Sampler, that does not support arbitrary log levels
-			encoder := zapcore.NewJSONEncoder(zap.NewProductionEncoderConfig())
-			sink := zapcore.AddSync(os.Stderr)
-			ZapLogger = zap.New(
-				zapcore.NewCore(
-					&corezap.KubeAwareEncoder{Encoder: encoder, Verbose: *dev},
-					sink,
-					zap.NewAtomicLevelAt(zapcore.Level(-*v))),
-				zap.AddCallerSkip(1),
-				zap.ErrorOutput(sink),
-				zap.AddStacktrace(zap.NewAtomicLevelAt(zap.ErrorLevel)),
-			)
-
-		}
-		ctrl.SetLogger(zapr.NewLogger(ZapLogger))
-	}
+	setupLogger := func() { ctrl.SetLogger(BuildLogger(*v, *dev, cmd.ErrOrStderr())) }
 
 	if cmd.PersistentPreRunE != nil {
 		parent := cmd.PersistentPreRunE

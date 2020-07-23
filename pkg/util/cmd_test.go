@@ -19,7 +19,6 @@ package util
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -29,9 +28,9 @@ func TestBuildLogger(t *testing.T) {
 	var buf bytes.Buffer
 	log := BuildLogger(7, false, &buf)
 	log.V(8).Info("hello")
-	assert.True(t, buf.Len() == 0)
+	assert.Empty(t, buf.Bytes())
 	log.V(6).Info("hello")
-	assert.False(t, buf.Len() == 0)
+	assert.NotEmpty(t, buf.Bytes())
 	v := map[string]interface{}{}
 	err := json.Unmarshal(buf.Bytes(), &v)
 	assert.Nil(t, err)
@@ -39,10 +38,9 @@ func TestBuildLogger(t *testing.T) {
 
 	log = BuildLogger(7, true, &buf)
 	log.V(8).Info("hello")
-	assert.True(t, buf.Len() == 0)
+	assert.Empty(t, buf.Bytes())
 	log.V(6).Info("hello")
-	assert.False(t, buf.Len() == 0)
+	assert.NotEmpty(t, buf.Bytes())
 	err = json.Unmarshal(buf.Bytes(), &v)
 	assert.NotNil(t, err)
-	fmt.Println(buf.String())
 }

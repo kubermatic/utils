@@ -23,6 +23,7 @@ import (
 	"github.com/go-logr/logr"
 	"github.com/go-logr/zapr"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"golang.org/x/crypto/ssh/terminal"
@@ -64,6 +65,7 @@ func BuildLogger(level int8, dev bool, w io.Writer) logr.Logger {
 func CmdLogMixin(cmd *cobra.Command) *cobra.Command {
 	dev := cmd.PersistentFlags().Bool("development", terminal.IsTerminal(int(os.Stdout.Fd())), "format output for console")
 	v := cmd.PersistentFlags().Int8P("verbose", "v", 0, "verbosity level")
+	_ = viper.BindPFlag("verbose", cmd.PersistentFlags().Lookup("verbose"))
 
 	setupLogger := func() { ctrl.SetLogger(BuildLogger(*v, *dev, cmd.ErrOrStderr())) }
 

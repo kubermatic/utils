@@ -29,7 +29,7 @@ type Task struct {
 	LDFlags string
 	// go package, e.g. utils
 	Package string
-	// go module, e.g. github.com/kubermatic/utils
+	// go module, e.g. k8c.io/utils
 	Module string
 }
 

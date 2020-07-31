@@ -28,8 +28,8 @@ import (
 	"k8s.io/apimachinery/pkg/types"
 	fakeclient "sigs.k8s.io/controller-runtime/pkg/client/fake"
 
-	"github.com/kubermatic/utils/pkg/testutil"
-	"github.com/kubermatic/utils/pkg/util"
+	"k8c.io/utils/pkg/testutil"
+	"k8c.io/utils/pkg/util"
 )
 
 func TestOwnedObjectReconciler_Reconcile(t *testing.T) {

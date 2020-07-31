@@ -30,7 +30,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/handler"
 	"sigs.k8s.io/controller-runtime/pkg/reconcile"
 
-	"github.com/kubermatic/utils/pkg/util"
+	"k8c.io/utils/pkg/util"
 )
 
 const (

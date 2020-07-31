@@ -40,7 +40,7 @@ import (
 	"k8s.io/client-go/tools/clientcmd/api"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/kubermatic/utils/pkg/ide"
+	"k8c.io/utils/pkg/ide"
 )
 
 type SUTFlags struct {

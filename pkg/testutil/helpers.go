@@ -33,7 +33,7 @@ import (
 	"k8s.io/client-go/util/jsonpath"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/kubermatic/utils/pkg/util"
+	"k8c.io/utils/pkg/util"
 )
 
 func ConditionStatusEqual(obj runtime.Object, ConditionType, ConditionStatus interface{}) error {

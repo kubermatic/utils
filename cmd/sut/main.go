@@ -21,8 +21,8 @@ import (
 
 	ctrl "sigs.k8s.io/controller-runtime"
 
-	"github.com/kubermatic/utils/pkg/sut"
-	"github.com/kubermatic/utils/pkg/util"
+	"k8c.io/utils/pkg/sut"
+	"k8c.io/utils/pkg/util"
 )
 
 func main() {
